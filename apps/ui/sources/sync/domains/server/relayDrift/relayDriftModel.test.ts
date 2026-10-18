@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { classifyRelayDrift, resolveKnownRelayEquivalentUrl } from './relayDriftModel';
+import { areRelayUrlsDifferent, classifyRelayDrift, resolveKnownRelayEquivalentUrl } from './relayDriftModel';
 
 describe('classifyRelayDrift', () => {
     it('treats localhost variants as the same relay identity', () => {
@@ -150,5 +150,14 @@ describe('resolveKnownRelayEquivalentUrl', () => {
             daemonRelayUrl: 'https://other.example.test',
             daemonAlternateRelayUrls: ['http://127.0.0.1:3012'],
         })).toBeNull();
+    });
+});
+
+describe('areRelayUrlsDifferent', () => {
+    it('ignores a trailing slash but reports genuinely different relays', () => {
+        expect(areRelayUrlsDifferent('https://relay.example.com/', 'https://relay.example.com')).toBe(false);
+        expect(areRelayUrlsDifferent('https://relay.example.com/', 'https://other.example.com')).toBe(true);
+        expect(areRelayUrlsDifferent('', 'https://relay.example.com')).toBe(false);
+        expect(areRelayUrlsDifferent('not a url', 'other')).toBe(true);
     });
 });

@@ -19,6 +19,7 @@ import { useTemporaryCopyFeedback } from '@/components/ui/copy/useTemporaryCopyF
 import { layout } from '@/components/ui/layout/layout';
 import { Modal } from '@/modal';
 import { useHappyAction } from '@/hooks/ui/useHappyAction';
+import { areRelayUrlsDifferent } from '@/sync/domains/server/relayDrift/relayDriftModel';
 import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';
 import { listServerProfiles, type ServerProfile } from '@/sync/domains/server/serverProfiles';
 import { readCurrentAppRuntimeInfo } from '@/sync/runtime/readCurrentAppRuntimeInfo';
@@ -476,7 +477,7 @@ export const SystemStatusView = React.memo(function SystemStatusView() {
                     if (fetchEntry.status === 'ready') {
                       const daemonServerUrl = fetchEntry.snapshot.server.serverUrl;
                       const daemonAccountId = fetchEntry.snapshot.accountId ?? t('status.unknown');
-                      const serverMismatch = activeServerUrl && daemonServerUrl && daemonServerUrl !== activeServerUrl;
+                      const serverMismatch = areRelayUrlsDifferent(activeServerUrl, daemonServerUrl);
                       const accountMismatch = profile?.id && fetchEntry.snapshot.accountId && fetchEntry.snapshot.accountId !== profile.id;
 
                       const mismatchLabel = serverMismatch || accountMismatch ? ` • ${t('systemStatus.mismatch')}` : '';

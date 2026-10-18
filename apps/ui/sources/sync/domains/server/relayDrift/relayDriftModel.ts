@@ -34,6 +34,16 @@ export function createRelayUrlComparableKeySafe(rawUrl: string | null | undefine
     }
 }
 
+/** True only when both URLs are present and identify different relays; unparseable values compare as trimmed text. */
+export function areRelayUrlsDifferent(a: string | null | undefined, b: string | null | undefined): boolean {
+    const left = String(a ?? '').trim();
+    const right = String(b ?? '').trim();
+    if (!left || !right) return false;
+    const leftKey = createRelayUrlComparableKeySafe(left);
+    const rightKey = createRelayUrlComparableKeySafe(right);
+    return leftKey && rightKey ? leftKey !== rightKey : left !== right;
+}
+
 export function resolveKnownRelayEquivalentUrl(params: Readonly<{
     activeRelayUrl: string | null | undefined;
     daemonRelayUrl: string | null | undefined;
